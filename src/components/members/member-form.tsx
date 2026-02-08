@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase-client'
 import { toast } from 'sonner'
 import { Loader2, ArrowLeft } from 'lucide-react'
 import type { Member, MemberRole, CreateMemberForm } from '@/types'
@@ -44,7 +44,7 @@ export function MemberForm({ clubId, member, mode }: MemberFormProps) {
     setIsLoading(true)
 
     try {
-      const supabase = await createClient()
+      // Client-side supabase ist verfügbar
 
       if (mode === 'create') {
         const { data, error } = await supabase

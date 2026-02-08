@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase-client'
 import { toast } from 'sonner'
 import { Loader2, ArrowLeft, Euro } from 'lucide-react'
 import type { ContributionType, ContributionInterval, CreateContributionTypeForm } from '@/types'
@@ -42,7 +42,7 @@ export function ContributionTypeForm({ clubId, contributionType, mode }: Contrib
     setIsLoading(true)
 
     try {
-      const supabase = await createClient()
+      // Client-side supabase ist verfügbar
 
       // Validate amount
       if (formData.amount <= 0) {

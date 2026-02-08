@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -28,10 +28,9 @@ import {
   Trash2,
   Eye,
   Mail,
-  Phone
+  Phone,
+  Users
 } from 'lucide-react'
-import { supabase } from '@/lib/supabase-client'
-import { toast } from 'sonner'
 import type { Member } from '@/types'
 
 interface MembersListProps {
@@ -39,12 +38,10 @@ interface MembersListProps {
   clubId: string
 }
 
-export function MembersList({ members: initialMembers, clubId }: MembersListProps) {
-  const [members, setMembers] = useState(initialMembers)
+export function MembersList({ members: initialMembers }: MembersListProps) {
   const [searchTerm, setSearchTerm] = useState('')
-  const [isPending, startTransition] = useTransition()
 
-  const filteredMembers = members.filter((member) => {
+  const filteredMembers = initialMembers.filter((member) => {
     const searchLower = searchTerm.toLowerCase()
     return (
       member.first_name.toLowerCase().includes(searchLower) ||
@@ -78,69 +75,6 @@ export function MembersList({ members: initialMembers, clubId }: MembersListProp
     return roles[role as keyof typeof roles] || role
   }
 
-  const handleStatusChange = async (memberId: string, newStatus: string) => {
-    try {
-      startTransition(async () => {
-        const supabase = await createClient()
-        
-        const { error } = await supabase
-          .from('members')
-          .update({ 
-            status: newStatus,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', memberId)
-
-        if (error) {
-          toast.error('Fehler beim Ändern des Status')
-          return
-        }
-
-        // Update local state
-        setMembers(prev => prev.map(member => 
-          member.id === memberId 
-            ? { ...member, status: newStatus as any }
-            : member
-        ))
-
-        toast.success('Status erfolgreich geändert')
-      })
-    } catch (error) {
-      console.error('Status change error:', error)
-      toast.error('Ein Fehler ist aufgetreten')
-    }
-  }
-
-  const handleDelete = async (member: Member) => {
-    if (!confirm(`Sind Sie sicher, dass Sie ${member.first_name} ${member.last_name} löschen möchten?`)) {
-      return
-    }
-
-    try {
-      startTransition(async () => {
-        const supabase = await createClient()
-        
-        const { error } = await supabase
-          .from('members')
-          .delete()
-          .eq('id', member.id)
-
-        if (error) {
-          toast.error('Fehler beim Löschen des Mitglieds')
-          return
-        }
-
-        // Update local state
-        setMembers(prev => prev.filter(m => m.id !== member.id))
-
-        toast.success('Mitglied erfolgreich gelöscht')
-      })
-    } catch (error) {
-      console.error('Delete error:', error)
-      toast.error('Ein Fehler ist aufgetreten')
-    }
-  }
-
   const formatDate = (dateString: string) => {
     return new Intl.DateTimeFormat('de-DE').format(new Date(dateString))
   }
@@ -150,53 +84,58 @@ export function MembersList({ members: initialMembers, clubId }: MembersListProp
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Mitgliederverwaltung</h1>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            Mitglieder-Cockpit
+          </h1>
           <p className="text-gray-600 mt-1">
-            Verwalten Sie alle Mitglieder Ihres Vereins
+            Alle Vereinsmitglieder im Überblick verwalten
           </p>
         </div>
         <Link href="/dashboard/members/new">
-          <Button>
+          <Button className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-lg transform hover:scale-105 transition-all">
             <Plus className="w-4 h-4 mr-2" />
-            Neues Mitglied
+            ✨ Neues Mitglied
           </Button>
         </Link>
       </div>
 
       {/* Search */}
-      <Card>
+      <Card className="border-emerald-100">
         <CardHeader>
-          <CardTitle className="text-lg">Mitglieder durchsuchen</CardTitle>
+          <CardTitle className="text-lg text-emerald-900 flex items-center">
+            <Search className="w-5 h-5 mr-2" />
+            Mitglieder durchsuchen
+          </CardTitle>
           <CardDescription>
-            Durchsuchen Sie nach Namen oder E-Mail-Adressen
+            Findet schnell das gesuchte Mitglied
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-emerald-400 w-4 h-4" />
             <Input
               placeholder="Name oder E-Mail eingeben..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-10 border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500"
             />
           </div>
           <div className="flex flex-wrap gap-2 mt-4 text-sm text-gray-600">
-            <span>Gefunden: {filteredMembers.length} von {members.length} Mitgliedern</span>
+            <span>🔍 Gefunden: {filteredMembers.length} von {initialMembers.length} Mitgliedern</span>
             <span>•</span>
-            <span>Aktiv: {members.filter(m => m.status === 'aktiv').length}</span>
+            <span>✅ Aktiv: {initialMembers.filter(m => m.status === 'aktiv').length}</span>
             <span>•</span>
-            <span>Inaktiv: {members.filter(m => m.status === 'inaktiv').length}</span>
+            <span>⏸️ Inaktiv: {initialMembers.filter(m => m.status === 'inaktiv').length}</span>
           </div>
         </CardContent>
       </Card>
 
       {/* Members Table */}
-      <Card>
+      <Card className="border-gray-100 shadow-lg">
         <CardHeader>
-          <CardTitle>Mitgliederliste</CardTitle>
+          <CardTitle className="text-gray-900">Mitgliederliste</CardTitle>
           <CardDescription>
-            Alle Mitglieder Ihres Vereins im Überblick
+            Alle Vereinsmitglieder in der Übersicht
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -215,7 +154,7 @@ export function MembersList({ members: initialMembers, clubId }: MembersListProp
                 </TableHeader>
                 <TableBody>
                   {filteredMembers.map((member) => (
-                    <TableRow key={member.id}>
+                    <TableRow key={member.id} className="hover:bg-emerald-50">
                       <TableCell>
                         <div>
                           <div className="font-medium text-gray-900">
@@ -230,12 +169,12 @@ export function MembersList({ members: initialMembers, clubId }: MembersListProp
                       <TableCell className="hidden md:table-cell">
                         <div className="space-y-1">
                           <div className="flex items-center text-sm text-gray-600">
-                            <Mail className="w-3 h-3 mr-2" />
+                            <Mail className="w-3 h-3 mr-2 text-emerald-500" />
                             {member.email}
                           </div>
                           {member.phone && (
                             <div className="flex items-center text-sm text-gray-600">
-                              <Phone className="w-3 h-3 mr-2" />
+                              <Phone className="w-3 h-3 mr-2 text-emerald-500" />
                               {member.phone}
                             </div>
                           )}
@@ -243,7 +182,9 @@ export function MembersList({ members: initialMembers, clubId }: MembersListProp
                       </TableCell>
 
                       <TableCell className="hidden lg:table-cell">
-                        {getRoleLabel(member.role)}
+                        <Badge variant="outline" className="border-emerald-200 text-emerald-700">
+                          {getRoleLabel(member.role)}
+                        </Badge>
                       </TableCell>
 
                       <TableCell>
@@ -257,7 +198,7 @@ export function MembersList({ members: initialMembers, clubId }: MembersListProp
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
+                            <Button variant="ghost" size="sm" className="hover:bg-emerald-50">
                               <MoreHorizontal className="w-4 h-4" />
                             </Button>
                           </DropdownMenuTrigger>
@@ -274,20 +215,7 @@ export function MembersList({ members: initialMembers, clubId }: MembersListProp
                                 Bearbeiten
                               </DropdownMenuItem>
                             </Link>
-                            <DropdownMenuItem
-                              onClick={() => handleStatusChange(
-                                member.id, 
-                                member.status === 'aktiv' ? 'inaktiv' : 'aktiv'
-                              )}
-                              disabled={isPending}
-                            >
-                              Status: {member.status === 'aktiv' ? 'Deaktivieren' : 'Aktivieren'}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleDelete(member)}
-                              className="text-red-600 focus:text-red-600"
-                              disabled={isPending}
-                            >
+                            <DropdownMenuItem className="text-red-600 focus:text-red-600">
                               <Trash2 className="w-4 h-4 mr-2" />
                               Löschen
                             </DropdownMenuItem>
@@ -300,21 +228,28 @@ export function MembersList({ members: initialMembers, clubId }: MembersListProp
               </Table>
             </div>
           ) : (
-            <div className="text-center py-8">
-              <div className="text-gray-400 mb-4">
-                <Search className="w-12 h-12 mx-auto" />
+            <div className="text-center py-12">
+              <div className="w-20 h-20 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                {searchTerm ? (
+                  <Search className="w-10 h-10 text-emerald-500" />
+                ) : (
+                  <Users className="w-10 h-10 text-emerald-500" />
+                )}
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Keine Mitglieder gefunden
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                {searchTerm ? 'Keine Mitglieder gefunden 🔍' : 'Noch keine Mitglieder da 👥'}
               </h3>
-              <p className="text-gray-600 mb-4">
-                {searchTerm ? 'Keine Mitglieder entsprechen Ihrem Suchbegriff.' : 'Sie haben noch keine Mitglieder hinzugefügt.'}
+              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                {searchTerm 
+                  ? 'Versucht es mit einem anderen Suchbegriff.' 
+                  : 'Fügt euer erstes Mitglied hinzu und startet durch!'
+                }
               </p>
               {!searchTerm && (
                 <Link href="/dashboard/members/new">
-                  <Button>
+                  <Button className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-lg transform hover:scale-105 transition-all">
                     <Plus className="w-4 h-4 mr-2" />
-                    Erstes Mitglied hinzufügen
+                    ✨ Erstes Mitglied hinzufügen
                   </Button>
                 </Link>
               )}
