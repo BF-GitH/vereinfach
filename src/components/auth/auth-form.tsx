@@ -21,6 +21,8 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [clubName, setClubName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [privacyAccepted, setPrivacyAccepted] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,6 +46,20 @@ export function AuthForm({ mode }: AuthFormProps) {
           return
         }
 
+        if (!privacyAccepted) {
+          toast.error('Bitte stimmt der Datenschutzerklärung zu')
+          return
+        }
+
+        if (!termsAccepted) {
+          toast.error('Bitte akzeptiert die AGB')
+          return
+        }
+
+        // Save consent timestamp
+        const consentTimestamp = new Date().toISOString()
+        localStorage.setItem('consent-timestamp', consentTimestamp)
+
         // Register user
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email,
@@ -51,6 +67,8 @@ export function AuthForm({ mode }: AuthFormProps) {
           options: {
             data: {
               club_name: clubName,
+              privacy_consent_timestamp: consentTimestamp,
+              terms_consent_timestamp: consentTimestamp,
             }
           }
         })
@@ -211,6 +229,51 @@ export function AuthForm({ mode }: AuthFormProps) {
                     minLength={6}
                     className="border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500"
                   />
+                </div>
+              )}
+
+              {mode === 'register' && (
+                <div className="space-y-4 pt-2 border-t border-gray-100">
+                  <p className="text-sm font-medium text-gray-700">
+                    Zustimmung erforderlich:
+                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-start space-x-3">
+                      <input
+                        type="checkbox"
+                        id="privacy-consent"
+                        checked={privacyAccepted}
+                        onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                        disabled={isLoading}
+                        className="mt-1 w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+                        required
+                      />
+                      <label htmlFor="privacy-consent" className="text-sm text-gray-600 leading-5">
+                        Ich habe die{' '}
+                        <Link href="/legal/datenschutz" target="_blank" className="text-emerald-600 hover:underline font-medium">
+                          Datenschutzerklärung
+                        </Link>{' '}
+                        gelesen und stimme der Verarbeitung meiner Daten zu. *
+                      </label>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <input
+                        type="checkbox"
+                        id="terms-consent"
+                        checked={termsAccepted}
+                        onChange={(e) => setTermsAccepted(e.target.checked)}
+                        disabled={isLoading}
+                        className="mt-1 w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+                        required
+                      />
+                      <label htmlFor="terms-consent" className="text-sm text-gray-600 leading-5">
+                        Ich akzeptiere die{' '}
+                        <Link href="/legal/agb" target="_blank" className="text-emerald-600 hover:underline font-medium">
+                          Allgemeinen Geschäftsbedingungen
+                        </Link>. *
+                      </label>
+                    </div>
+                  </div>
                 </div>
               )}
 

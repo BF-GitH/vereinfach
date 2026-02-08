@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
+import CookieBanner from '@/components/legal/cookie-banner'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -10,8 +11,8 @@ export const metadata: Metadata = {
     template: '%s | VereinFach',
     default: 'VereinFach - Vereinsarbeit einfach gemacht'
   },
-  description: 'VereinFach macht Vereinsarbeit endlich einfach. Moderne Vereinsverwaltung für deutsche Vereine - intuitiv, sicher und DSGVO-konform.',
-  keywords: ['Vereinsverwaltung', 'Vereinssoftware', 'Mitgliederverwaltung', 'Deutschland', 'DSGVO', 'einfach', 'modern'],
+  description: 'VereinFach macht Vereinsarbeit endlich einfach. Moderne Vereinsverwaltung für deutsche Vereine - intuitiv, sicher und datenschutzfreundlich.',
+  keywords: ['Vereinsverwaltung', 'Vereinssoftware', 'Mitgliederverwaltung', 'Deutschland', 'datenschutzfreundlich', 'einfach', 'modern'],
   authors: [{ name: 'VereinFach' }],
   creator: 'VereinFach',
   publisher: 'VereinFach',
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://vereinfach.de'),
   openGraph: {
     title: 'VereinFach - Vereinsarbeit einfach gemacht',
-    description: 'VereinFach macht Vereinsarbeit endlich einfach. Moderne Vereinsverwaltung für deutsche Vereine - intuitiv, sicher und DSGVO-konform.',
+    description: 'VereinFach macht Vereinsarbeit endlich einfach. Moderne Vereinsverwaltung für deutsche Vereine - intuitiv, sicher und datenschutzfreundlich.',
     url: 'https://vereinfach.de',
     siteName: 'VereinFach',
     locale: 'de_DE',
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'VereinFach - Vereinsarbeit einfach gemacht',
-    description: 'VereinFach macht Vereinsarbeit endlich einfach. Moderne Vereinsverwaltung für deutsche Vereine - intuitiv, sicher und DSGVO-konform.',
+    description: 'VereinFach macht Vereinsarbeit endlich einfach. Moderne Vereinsverwaltung für deutsche Vereine - intuitiv, sicher und datenschutzfreundlich.',
   },
   robots: {
     index: true,
@@ -57,6 +58,7 @@ export default function RootLayout({
       <body className={inter.className}>
         {children}
         <Toaster />
+        <CookieBanner />
       </body>
     </html>
   )

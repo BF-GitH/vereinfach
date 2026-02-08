@@ -104,10 +104,12 @@ export function DashboardNav({ clubName }: DashboardNavProps) {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-3">
-            <Button variant="ghost" size="sm" className="text-gray-600 hover:text-emerald-600">
-              <Settings className="w-4 h-4 mr-2" />
-              Einstellungen
-            </Button>
+            <Link href="/dashboard/settings">
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-emerald-600">
+                <Settings className="w-4 h-4 mr-2" />
+                Einstellungen
+              </Button>
+            </Link>
             <Button 
               variant="ghost" 
               size="sm" 
@@ -156,14 +158,16 @@ export function DashboardNav({ clubName }: DashboardNavProps) {
                 </Link>
               ))}
               <div className="border-t border-gray-200 my-3"></div>
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start text-gray-600 hover:text-emerald-600 hover:bg-emerald-50" 
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <Settings className="w-5 h-5 mr-3" />
-                Einstellungen
-              </Button>
+              <Link href="/dashboard/settings">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start text-gray-600 hover:text-emerald-600 hover:bg-emerald-50" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Settings className="w-5 h-5 mr-3" />
+                  Einstellungen
+                </Button>
+              </Link>
               <Button 
                 variant="ghost" 
                 className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"

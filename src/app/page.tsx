@@ -86,7 +86,7 @@ export default function HomePage() {
             </Button>
           </div>
           <p className="text-sm text-gray-500 mt-4">
-            ✓ 30 Tage kostenlos ✓ Keine Kreditkarte nötig ✓ DSGVO-sicher
+            ✓ 30 Tage kostenlos ✓ Keine Kreditkarte nötig ✓ Datenschutz mitgedacht
           </p>
         </div>
       </section>
@@ -193,16 +193,16 @@ export default function HomePage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-4">
                   <Shield className="w-6 h-6 text-white" />
                 </div>
-                <CardTitle className="text-purple-900">DSGVO-sicher</CardTitle>
+                <CardTitle className="text-purple-900">Datenschutz mitgedacht</CardTitle>
                 <CardDescription>
-                  Höchste Sicherheit - made in Germany
+                  Datenschutz nach europäischem Standard
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center"><Check className="w-4 h-4 text-purple-500 mr-2" />Deutsche Server</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-purple-500 mr-2" />Ende-zu-Ende verschlüsselt</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-purple-500 mr-2" />100% DSGVO-konform</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-purple-500 mr-2" />Server in der EU</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-purple-500 mr-2" />Verschlüsselte Datenübertragung (TLS)</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-purple-500 mr-2" />Technische Sicherheitsmaßnahmen</li>
                 </ul>
               </CardContent>
             </Card>
@@ -371,13 +371,13 @@ export default function HomePage() {
                   <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center mr-3">
                     <Mail className="w-5 h-5 text-white" />
                   </div>
-                  <span>hallo@vereinfach.de</span>
+                  <span className="text-gray-500">[VOR LAUNCH AUSFÜLLEN] kontakt@[domain].de</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg flex items-center justify-center mr-3">
                     <Phone className="w-5 h-5 text-white" />
                   </div>
-                  <span>+49 (0) 30 98765432</span>
+                  <span className="text-gray-500">[VOR LAUNCH AUSFÜLLEN] +49 (0) XXX XXXXXXX</span>
                 </div>
               </div>
               <p className="text-gray-600 mt-4">
@@ -390,11 +390,12 @@ export default function HomePage() {
               <div className="space-y-3">
                 <details className="group">
                   <summary className="cursor-pointer text-gray-700 group-open:text-emerald-600 font-medium">
-                    🔒 Ist VereinFach DSGVO-konform?
+                    🔒 Wie steht es um den Datenschutz?
                   </summary>
                   <p className="text-gray-600 mt-2 pl-6">
-                    Ja, absolut! Unsere Server stehen in Deutschland und wir erfüllen 
-                    alle DSGVO-Anforderungen.
+                    Wir setzen technische Maßnahmen nach Stand der Technik ein 
+                    (Verschlüsselung, Zugriffskontrolle, Minimierung). Details in 
+                    unserer Datenschutzerklärung.
                   </p>
                 </details>
                 <details className="group">
@@ -460,9 +461,9 @@ export default function HomePage() {
             <div>
               <h4 className="font-bold mb-4">Legal</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Impressum</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Datenschutz</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">AGB</a></li>
+                <li><a href="/legal/impressum" className="hover:text-white transition-colors">Impressum</a></li>
+                <li><a href="/legal/datenschutz" className="hover:text-white transition-colors">Datenschutz</a></li>
+                <li><a href="/legal/agb" className="hover:text-white transition-colors">AGB</a></li>
               </ul>
             </div>
           </div>
